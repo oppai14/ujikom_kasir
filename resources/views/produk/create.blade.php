@@ -57,11 +57,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <div class="form-group">
               <label for="gambar">Gambar</label>
               {{-- <form action="upload.php" method="post" enctype="multipart/form-data"> --}}
-                <input type="file" name="gambar" accept="image/*">
+                <input type="file" name="gambar" accept="image/*" class="form-control">
                 {{-- <input type="submit" value="Upload Foto"> --}}
                 <div class="form-group">
                     <label for="kategori">kategori</label>
-                    <input type="text" name="kategori" class="form-control mb-3" placeholder="kategori" autocomplete="off" autofocus required>
+                    <select name="id_kategori" id="" class="form-control">
+                      @foreach ($kategori as $data )
+                        <option value="{{ $data->id }}">{{ $data->nama }}</option>
+                      @endforeach
+
+                    </select>
+                    {{-- <input type="text" name="kategori" class="form-control mb-3" placeholder="kategori" autocomplete="off" autofocus required> --}}
                 </div>
                   <div class="form-group">
                     <label for="hpp">HPP</label>
@@ -69,7 +75,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   </div>
                   <div class="form-group">
                     <label for="harga_jual">Harga Jual</label>
-                      <input type="text" name="hj" class="form-control mb-3" placeholder="harga_jual" autocomplete="off" autofocus required>
+                      <input type="text" name="harga_jual" class="form-control mb-3" placeholder="harga jual" autocomplete="off" autofocus required>
+                  </div>
+                  <div class="form-group">
+                    <label for="hpp">Stok</label>
+                      <input type="text" name="stok" class="form-control mb-3" placeholder="stok barang" autocomplete="off" autofocus required>
                   </div>
                 <div class="form-group">
                    <button type="submit" class="btn btn-primary">Simpan</button>

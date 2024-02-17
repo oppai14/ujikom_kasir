@@ -52,6 +52,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <th>Kategori</th>
                         <th>Hpp</th>
                         <th>Harga Jual</th>
+                        <th>Stok</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="isi">
@@ -64,6 +66,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <td>{{ $data->kategori  }}</td>
                             <td>{{ $data->hpp  }}</td>
                             <td>{{ $data->hj }}</td>
+                            <td>{{ $data->stok }}</td>
                             <td><a href="{{ route('produk.edit', $data->id) }}" class="btn btn-warning m-1 "><i class="bi bi-pencil-square">Edit</i></a>
                                 <form action="{{ route('produk.destroy', $data->id) }}" method="post" style="display: inline">
                                     @csrf

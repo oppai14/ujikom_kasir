@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\produk;
+use App\Models\kategori;
+use App\Models\produkdetail;
 use App\Models\vwproduk;
 use App\Models\Kategori as KategoriModel;
 
@@ -11,16 +13,17 @@ class ProdukController extends Controller
 {
     //index
     public function index(){
-        $produks = vwProduk::all();
-        return view('produk.index', ['datas' => $produks]);
+        $produk = vwProduk::all();
+        return view('produk.index', ['datas' => $produk]);
         // return view('produk.index');
     }
 
     //halaman tambah
     public function create()
     {
-        $kategoris = produk::all();
-        return view('produk.create',  ['datas' => $kategoris]);
+        $produk = produk::all();
+        $kategori = kategori::all();
+        return view('produk.create',  ['datas' => $produk, 'kategori' => $kategori]);
         // return view('produk.create');
     }
 
@@ -43,19 +46,27 @@ class ProdukController extends Controller
         return redirect()->back()->with('error', 'Gagal mengunggah gambar.');
     }
 
-    $nilai = [
+    $nilai_produk = [
         'nama'          => $request->nama,
+    ];
+    // produk::create($nilai_produk)
+    $id_produk = produk::create($nilai_produk)->id;
+    $nilai_produk_detail = [
+        'id_produk'     => $id_produk,
         'gambar'        => $nama_gambar,
-        'kategori_id'   => $request->kategori,
+        'id_kategori'   => $request->kategori,
         'hpp'           => $request->hpp,
         'harga_jual'    => $request->harga_jual,
+        'stok'          => $request->stok
     ];
+
+    produkdetail::create($nilai_produk_detail);
     // var_dump($nilai);exit;
     // Tampilkan nilai jika proses pengiriman data gagal
-    if (!produk::create($nilai)) {
-        var_dump($nilai);
-        exit(); // Hentikan eksekusi script jika ingin menampilkan hanya saat gagal
-    }
+    // if (!) {
+    //     var_dump($nilai);
+    //     exit(); // Hentikan eksekusi script jika ingin menampilkan hanya saat gagal
+    // }
 
     return redirect()->route('produk.index')->with('success', 'Produk berhasil disimpan');
 }
@@ -64,10 +75,17 @@ class ProdukController extends Controller
 
     // halaman edit
     public function edit($id){
-        $produk = Produk::findOrFail($id);
-        $kategoris = produk::all();
+       // Menggunakan first() untuk mendapatkan satu hasil
+    $produk = vwproduk::where('id', $id)->first();
+    $kategori = kategori::all();
+    
+    // Memastikan produk ditemukan sebelum diteruskan ke view
+    if(!$produk){
+        return redirect()->route('produk.index')->with('error', 'Produk tidak ditemukan');
+    }
 
-        return view('produk.edit', ['data' => $produk, 'kategoris' => $kategoris]);
+    // Mengirimkan data produk dan kategori ke view
+    return view('produk.edit', ['data' => $produk, 'kategori' => $kategori]);
     }
 
     //kirim data edit
@@ -76,7 +94,7 @@ class ProdukController extends Controller
         $nilai = [
             'nama'          => $request->nama,
             'gambar'        => $request->gambar,
-            'kategori_id'   => $request->kategori,
+            'id_kategori'   => $request->kategori,
             'hpp'           => $request->hpp,
             'harga_jual'    => $request->harga_jual,
         ];
@@ -90,6 +108,8 @@ class ProdukController extends Controller
     public function destroy($id)
     {
         Produk::findOrFail($id)->delete();
+        produkdetail::where('id_produk', $id)->delete();
+
         return redirect()->route('produk.index')->with('success', 'Produk berhasil dihapus');
     }
 }

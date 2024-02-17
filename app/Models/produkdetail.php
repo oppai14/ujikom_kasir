@@ -9,4 +9,7 @@ class produkdetail extends Model
 {
     use HasFactory;
     protected $table='produk_detail';
+    protected $fillable = [
+        'id_produk','gambar', 'id_kategori', 'hpp', 'harga_jual','stok'
+    ];
 }
